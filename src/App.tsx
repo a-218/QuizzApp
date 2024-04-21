@@ -25,6 +25,7 @@ const App=()=> {
   const questionHandler = (event: React.ChangeEvent<HTMLInputElement>) =>{
     //event.currentTarget.value.replace(/[^0-9a-zA-Z]/g, '');
     const inputValue = parseInt(event.currentTarget.value);
+
     if(inputValue > 50){
       event.target.setCustomValidity("Please enter a value less than 50."); 
       console.log("Please enter a value less than 50.");
@@ -46,8 +47,9 @@ const App=()=> {
       <label>
         Number of Questions:
         <input 
-          type="text" 
-          name="name" 
+          id='inputNumber'
+          type="number" 
+          name="NumberQuestion" 
           defaultValue={question} 
           onChange={questionHandler}
           />
