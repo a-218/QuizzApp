@@ -1,99 +1,65 @@
-import React, {useState } from 'react';
+import React, {FormEvent, ReactEventHandler, useState } from 'react';
 // components
 import QuestionCard from './components/QuestionCard';
-import { QuestionState, difficulty, fetchQuizQuestions } from './API';
+import { QuestionState, fetchQuizQuestions } from './API';
 import { GlobalStyle, Wrapper } from './App.styles';
+import { DropDown } from './components/DropDown';
+import { category, difficulty, questionType } from './Data/data';
 
-export type AnswerObject ={
-  question: string; 
-  answer: string;
-  correct: boolean;
-  correctAnswer: string;
-}
+// export type AnswerObject ={
+//   question: string; 
+//   answer: string;
+//   correct: boolean;
+//   correctAnswer: string;
+// }
 
-const Total_Questions = 5;
+// const Total_Questions = 5;
 
 const App=()=> {
-  const [loading, setLoading] = useState(false);
-  const [questions, setQuestions] = useState<QuestionState[]>([]);
-  const [number, setNumber] = useState(0);
-  const [userAnswers, setUserAnswers] = useState<AnswerObject[]>([]);
-  const [score, setScore] = useState(0);
-  const [gameOver, setGameOver] = useState(true);
 
+  const [question, setQuestions] = useState(10);
+  const [categories, setCategories] = useState();
+  const [difficulties, setDifficulties] = useState();
+  const [types, setTypes] = useState();
 
-  // by doing the async here, it stops the double ccalling api in gogole chrome, 
-  const startTrivia = async()=>{
-    // when we click start button trigger api fetch
-    setLoading(true);
-    setGameOver(false);
-
-    const newQuestions = await (fetchQuizQuestions(Total_Questions, difficulty.EASY));
-
-    setQuestions(newQuestions);
-    setScore(0);
-    setUserAnswers([]);
-    setNumber(0);
-    setLoading(false);
-
-  }
-
-  const checkAnswer = (e: React.MouseEvent<HTMLButtonElement>)=>{
-  
-    if(!gameOver) {
-      const answer = e.currentTarget.value; 
-      const correct = questions[number].correct_answer === answer;
-      if(correct) setScore(prev => prev +1);
-      // Save answer in the array 
-      const answerObject  ={
-        question: questions[number].question, 
-        answer: answer,
-        correct: correct,
-        correctAnswer: questions[number].correct_answer,
-
-      }
-      setUserAnswers(prev=>[...prev, answerObject]);
-    }
-  }
-
-  const nextQuestion =()=>{
-    // move on the next question if not the lasst
-    const nextQuestion = number + 1; 
-    if(nextQuestion === Total_Questions){
-      setGameOver(true)
+  const questionHandler = (event: React.ChangeEvent<HTMLInputElement>) =>{
+    //event.currentTarget.value.replace(/[^0-9a-zA-Z]/g, '');
+    const inputValue = parseInt(event.currentTarget.value);
+    if(inputValue > 50){
+      event.target.setCustomValidity("Please enter a value less than 50."); 
+      console.log("Please enter a value less than 50.");
+    }else if(inputValue <= 0 ){
+      event.target.setCustomValidity("Please enter a value greater than 0."); 
+    }else if (isNaN(inputValue)){
+      event.target.setCustomValidity("Please enter an integer greater than 0 less than 50."); 
     }else{
-      setNumber(nextQuestion);
+      setQuestions(inputValue);
+      event.target.setCustomValidity("");
+      console.log(inputValue);
     }
+    
+    
   }
-
   return (
     <>
-    <GlobalStyle />
-    <Wrapper>
-      <h1> React Quiz</h1>
-      {gameOver || userAnswers.length === Total_Questions ? ( 
-        <button className='start' onClick={startTrivia}>
-          Start
-        </button>)
-        : null}
-        {!gameOver? <p className='score'> Score:  {score}</p> : null}
-        {loading ? <p>Loading Questions</p> : null}
-      
-      {!loading && !gameOver && (
-         <QuestionCard 
-            questionNr={number + 1}
-            totalQuestions={Total_Questions}
-            question={questions[number].question} 
-            answers= {questions[number].answers}
-            userAnswer={userAnswers? userAnswers[number]: undefined}
-            callback={checkAnswer}
-         />
-      )}
+    <form onSubmit={e => e.preventDefault()}>
+      <label>
+        Number of Questions:
+        <input 
+          type="text" 
+          name="name" 
+          defaultValue={question} 
+          onChange={questionHandler}
+          />
+      </label>
 
-        {!loading && !gameOver && userAnswers.length === number +1 && number !== Total_Questions -1 ?  (
-            <button className='next' onClick={nextQuestion}>Next Question</button>
-        ) : null }
-        </Wrapper>
+      <DropDown label= "Category" options= {category}/>
+      <DropDown label= "Question Type" options= {questionType}/>
+      <DropDown label= "Difficulty" options= {difficulty}/>
+
+      <button type="submit" title='Start Game'/>
+    </form>
+   
     </>
   );
 }
