@@ -8,8 +8,6 @@ export type Question = {
     question: string,
     correct_answer: string,
     incorrect_answers: string[]
-
-
 }
 
 //use type of questioa and add answers to create new types

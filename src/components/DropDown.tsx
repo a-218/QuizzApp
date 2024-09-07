@@ -6,17 +6,18 @@ interface IOption {
 }
 
 interface Props {
+    name?: string;
     label?: string;
     options: IOption[];
 }
 
 export const DropDown = (props: Props) =>{
-    const{ label,options } = props;
+    const{ name, label,options } = props;
 
  return (
     <>
     <div>Select {label}</div>
-        <select>
+        <select name={name}>
             {options.map((option:IOption)=>{
                 return <option key={option.value} value={option.value}>{option.valueText}</option>
             })}

@@ -41,25 +41,49 @@ const App=()=> {
     
     
   }
+// on that is the constructing the page of the question so, home page grab all teh value and send it as url
+
+  /// next will be on submit grab all the state value and construct URl-> AT THE SAME TIME go to loading and new page
+
+    const handleFormEvent= (e: FormEvent<HTMLFormElement>)=>{
+      e.preventDefault(); 
+
+      const formData = new FormData(e.currentTarget);
+      const numberQuestion = formData.get('NumberQuestion');
+      const selectedCategory = formData.get('Category');
+      const selectedQuestionType = formData.get('QuestionType');
+      const selectedDifficulty = formData.get('Difficulty');
+
+      console.log('Number of Questions:', numberQuestion);
+      console.log('Selected Category:', selectedCategory);
+      console.log('Selected Question Type:', selectedQuestionType);
+      console.log('Selected Difficulty:', selectedDifficulty);
+
+    }
+
   return (
     <>
-    <form onSubmit={e => e.preventDefault()}>
+    <form onSubmit={handleFormEvent}>
       <label>
         Number of Questions:
+      </label>
+      <br></br>
         <input 
           id='inputNumber'
           type="number" 
           name="NumberQuestion" 
           defaultValue={question} 
           onChange={questionHandler}
-          />
-      </label>
+        />
+        <br></br>
+        <DropDown name="Category" label= "Category" options= {category}/>
+        <br></br>
+        <DropDown name="QuestionType" label= "QuestionType" options= {questionType}/>
+        <br></br>
+        <DropDown  name="Difficulty"label= "Difficulty" options= {difficulty}/>
+        <br></br>
 
-      <DropDown label= "Category" options= {category}/>
-      <DropDown label= "Question Type" options= {questionType}/>
-      <DropDown label= "Difficulty" options= {difficulty}/>
-
-      <button type="submit" title='Start Game'/>
+        <input type="submit" title='Start Game' />
     </form>
    
     </>
