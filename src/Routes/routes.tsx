@@ -15,10 +15,5 @@ export const router = createBrowserRouter([
         element:<QuestionPage />,
     
     },
-    {
-        path:"/home",
-        element:<HomePage />,
-    
-    },
 
 ])
